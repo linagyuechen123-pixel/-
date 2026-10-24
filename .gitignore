@@ -46,10 +46,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# 演示截图体积较大（约 58M），通过赛事表单提交，不入源码仓库。
-# 调查记录 record.json 保留入库，作为三次真实查询的证据链。
-# 可用 node tests/demo-capture.mjs 随时重新生成截图。
+# 演示截图/视频帧体积较大（约 58M + 数百帧），通过赛事表单提交，不入源码仓库。
+# 调查记录 record.json / mobile-report.json / recording-meta.json 保留入库，作为真实查询的证据链。
+# 可用 node tests/demo-capture.mjs / tests/demo-record.mjs 随时重新生成。
 demo/**/*.png
+demo/**/*.jpg
+demo/**/*.jpeg
 
 # 本地工作数据（工作区记忆、应用登记），不进公开仓库
 .workbuddy/

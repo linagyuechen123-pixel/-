@@ -99,10 +99,17 @@ PRISM 是面向 WaytoAGI 1024 超能 Coding 周末「侦探赛道」的作品，
 | 代码规范 | `npm run lint` | 通过（0 warning / 0 error） |
 | 生产构建 | `npm run build` | 通过，7 条路由全部产出 |
 | 契约测试 | `node tests/search-contract.mjs` | 12 项全部通过（含已配置密钥分支） |
+| 移动端端到端 | `node tests/mobile-check.mjs` | 9/9 通过（390×844 真实 Chrome，对已部署站点） |
 | 浏览器端到端（文本流程） | `node tests/demo-capture.mjs "<说法>"` | 已执行 2 次，均跑通全流程 |
 | 浏览器端到端（OCR 流程） | `node tests/demo-ocr-capture.mjs` | 已执行，OCR 成功并完成调查 |
 
 契约测试覆盖：非法 JSON、空查询、超长查询、缺密钥时的正确错误码、非法 `cnt`、以及**配置密钥后**的来源字段完整性与去重校验（`tests/search-contract.mjs` 会按 `/api/health` 结果自动切换断言分支）。
+
+移动端测试覆盖：首页加载与搜索就绪、无横向溢出、可提交调查、子命题渲染、可触发多轮搜索、产出报告、外链可点且指向外部站点、无应用级 JS 异常。
+
+> 移动端运行期会观察到 2 条 `/favicon.ico` 的 403，来自部署平台分享网关对不带 `sharecode` 请求的拦截（静态资源同样受限），属平台层噪音而非应用缺陷。测试脚本已把「资源层 403」与「JS 异常」分开统计，不合并计分。
+
+**尚未执行**：真实 iOS / Android 设备上的触摸手势回归（尤其 DragEvent 拖拽；移动端已提供下拉菜单作为等效替代路径）；多浏览器兼容测试（仅 Chrome 验证过）。
 
 ### 生产环境真实性校验（2026-10-24）
 
@@ -130,7 +137,7 @@ PRISM 是面向 WaytoAGI 1024 超能 Coding 周末「侦探赛道」的作品，
 | P0-06 | 支持 / 反对 / 背景 / 待核验整理 | `runner.ts` + SourceCard 下拉 + 拖拽区 |
 | P0-07 | 可追溯报告 | `components/report/ReportView.tsx` |
 | P0-08 | 真实错误状态 | 全链路错误码 + 调查室错误展示 |
-| P0-09 | 移动端布局 | Tailwind 响应式 + 降级替代交互 |
+| P0-09 | 移动端布局 | Tailwind 响应式 + 降级替代交互；**已实测**：390×844 真实 Chrome 端到端 9/9（见 §7） |
 | P0-10 | 演示材料 | **已完成**：`demo/` 下 3 组真实截图 + `record.json`（真实轮次、来源、结论，来源链接均通过可打开性抽验） |
 
 ### P1
@@ -162,6 +169,6 @@ PRISM 是面向 WaytoAGI 1024 超能 Coding 周末「侦探赛道」的作品，
 
 ## 9. 下一步任务
 
-1. 小红书 / 视频号公开分享：链接 `https://prism-evidence.app.workbuddy.host/?sharecode=EAKUMP27DH`，2026-10-25 23:59 前补填。
-2. 公开分享前建议用手机浏览器完整走一遍流程（移动端布局已适配，但未做真机回归）。
-3. 可选优化：修复上表第 9 项；为 `/upload` 页的 OCR 进度补充阶段文案；把演示材料整理成短视频脚本。
+1. 小红书 / 视频号公开分享：链接 `https://prism-evidence.app.workbuddy.host/?sharecode=EAKUMP27DH`（**必须带 `sharecode` 参数**，否则网关直接 403「链接不完整」），2026-10-25 23:59 前补填。
+2. **移动端已用真实浏览器验证**（不再是需要真机回归的待办）：`node tests/mobile-check.mjs`，390×844 视口走通「提交 → 子命题 → 多轮搜索 → 报告 → 外链可点」，9/9 通过。
+3. 可选优化：为 `/upload` 页的 OCR 进度补充阶段文案；把演示材料整理成短视频脚本。

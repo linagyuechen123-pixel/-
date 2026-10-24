@@ -42,6 +42,8 @@ npm start                        # next start -H 0.0.0.0，监听 $PORT
 npm run lint        # ESLint
 npm run typecheck   # tsc --noEmit
 node tests/search-contract.mjs          # 搜索接口契约测试（需先启动服务）
+node tests/mobile-check.mjs             # 移动端端到端验证（对已部署站点）
+node tests/demo-record.mjs "<说法>"      # 录制完整调查流程演示视频
 ```
 
 ## 真实查询验证记录（2026-10-24）
@@ -55,6 +57,8 @@ node tests/search-contract.mjs          # 搜索接口契约测试（需先启�
 | 微波炉加热塑料饭盒会释放致癌物质（截图 OCR 进入调查） | 12 | 114 | `conflicting`（与现有证据冲突） |
 
 三次均运行于大模型模式（非规则化降级）；`record.json` 中每条来源均含真实可打开的 URL（抽验返回 HTTP 200）。
+
+另有完整流程录屏 `demo/05-演示录屏/investigation.mp4`（38 秒 / 1440×900，真实 Chrome 驱动线上站点录制，无剪辑）与移动端端到端验证 `demo/04-移动端验证/`（390×844 真实 Chrome，9/9 通过）。
 
 ## 环境变量
 
