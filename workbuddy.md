@@ -3,6 +3,10 @@
 > 本文件反映代码的实际状态，随开发同步更新。交接规范文档编号 PRISM-HO-001 v1.0。
 > 最后更新：2026-10-24
 
+- **GitHub 仓库**：https://github.com/linagyuechen123-pixel/-
+- **线上作品**：https://prism-evidence.app.workbuddy.host/?sharecode=EAKUMP27DH （必须带 `sharecode` 参数）
+- **参赛提交材料**：见仓库根目录 `SUBMISSION.md`（侦探赛道，截止 2026-10-25 16:00）
+
 ## 1. 项目背景与目标
 
 PRISM 是面向 WaytoAGI 1024 超能 Coding 周末「侦探赛道」的作品，定位为**具有真实搜索能力的沉浸式事实调查工具**。
