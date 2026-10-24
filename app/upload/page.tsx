@@ -11,6 +11,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createWorker } from "tesseract.js";
 import Link from "next/link";
+import PageNav from "@/components/nav/PageNav";
 
 const ACCEPTED = ["image/png", "image/jpeg", "image/webp"];
 const ACCEPTED_EXT = [".png", ".jpg", ".jpeg", ".webp"];
@@ -113,12 +114,13 @@ export default function UploadPage() {
 
   return (
     <main className="mx-auto w-full max-w-[1000px] px-6 py-8 md:px-8">
-      <header className="mb-8 flex items-center justify-between">
+      <header className="mb-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <PageNav />
         <Link href="/" className="flex items-baseline gap-3">
           <span className="display-serif text-[20px] tracking-[0.18em]">PRISM</span>
           <span className="label-en">Evidence Observatory</span>
         </Link>
-        <span className="label-en">Screenshot intake</span>
+        <span className="label-en ml-auto">Screenshot intake</span>
       </header>
 
       <h1 className="display-serif text-[clamp(1.8rem,4vw,2.6rem)]">截图查证</h1>

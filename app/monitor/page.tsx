@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import PageNav from "@/components/nav/PageNav";
 import { recheckTarget } from "@/lib/investigation/watch";
 import { listTargets, removeTarget, saveTarget } from "@/lib/storage/watch";
 import {
@@ -115,12 +116,13 @@ export default function MonitorPage() {
 
   return (
     <main className="mx-auto w-full max-w-[1000px] px-6 py-8 md:px-8">
-      <header className="mb-8 flex items-center justify-between">
+      <header className="mb-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <PageNav />
         <Link href="/" className="flex items-baseline gap-3">
           <span className="display-serif text-[20px] tracking-[0.18em]">PRISM</span>
           <span className="label-en">Evidence Observatory</span>
         </Link>
-        <span className="label-en">Monitor</span>
+        <span className="label-en ml-auto">Monitor</span>
       </header>
 
       <div className="flex flex-wrap items-baseline gap-3">

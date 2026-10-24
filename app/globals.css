@@ -114,6 +114,117 @@ body {
   border-color: var(--prism-hairline);
 }
 
+/* ---------- 通用动效：丝滑弹跳（全站 UI 统一复用） ----------
+   约定：新增交互元素一律套用 .prism-nav-btn / .prism-pop-in，
+   保证「弹入 → 悬停上浮 → 按下回弹 → 图标轻推」的手感一致。
+   减少动态效果由下方 prefers-reduced-motion 规则统一关闭，无需逐处处理。 */
+
+@keyframes prism-pop-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.94);
+  }
+  55% {
+    opacity: 1;
+    transform: translateY(3px) scale(1.03);
+  }
+  78% {
+    transform: translateY(-1px) scale(0.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 悬停时图标的轻推：一次性的小位移，不做循环，避免持续抖动干扰阅读 */
+@keyframes prism-nudge-x {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  35% {
+    transform: translateX(-4px);
+  }
+  70% {
+    transform: translateX(1.5px);
+  }
+}
+
+@keyframes prism-nudge-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-3px);
+  }
+  72% {
+    transform: translateY(1px);
+  }
+}
+
+.prism-pop-in {
+  animation: prism-pop-in 560ms var(--ease-prism) both;
+}
+
+.prism-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.8125rem;
+  line-height: 1;
+  color: var(--prism-silver);
+  background: linear-gradient(
+    180deg,
+    rgba(18, 22, 31, 0.72) 0%,
+    rgba(9, 11, 16, 0.72) 100%
+  );
+  border: 1px solid var(--prism-hairline);
+  border-radius: var(--radius-prism);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+  /* 弹性曲线：位移与缩放同时过渡，形成「跳动」的手感 */
+  transition:
+    transform 280ms var(--ease-prism),
+    color 200ms var(--ease-prism),
+    border-color 200ms var(--ease-prism),
+    box-shadow 240ms var(--ease-prism);
+  will-change: transform;
+}
+
+.prism-nav-btn:hover {
+  color: var(--prism-accent);
+  border-color: var(--prism-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(216, 255, 117, 0.12);
+}
+
+.prism-nav-btn:active {
+  /* 按下先压再弹回，回弹由过渡曲线产生 */
+  transform: translateY(1px) scale(0.97);
+}
+
+.prism-nav-glyph {
+  display: inline-block;
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+.prism-nav-btn:hover .prism-nav-glyph {
+  animation: prism-nudge-x 620ms var(--ease-prism);
+}
+
+/* 竖向轻推：用于没有横向语义的图标（如回到首页） */
+.prism-nav-glyph-y {
+  animation-name: prism-nudge-y;
+}
+
+.prism-nav-btn:hover .prism-nav-glyph-y {
+  animation: prism-nudge-y 620ms var(--ease-prism);
+}
+
 /* ---------- 减少动态效果（§16.2） ---------- */
 
 @media (prefers-reduced-motion: reduce) {

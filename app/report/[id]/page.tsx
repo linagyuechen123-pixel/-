@@ -11,6 +11,7 @@ import ReportView from "@/components/report/ReportView";
 import { loadBundle } from "@/lib/storage/local";
 import type { InvestigationBundle } from "@/types/prism";
 import Link from "next/link";
+import PageNav from "@/components/nav/PageNav";
 
 export default function ReportPage() {
   const params = useParams<{ id: string }>();
@@ -33,12 +34,13 @@ export default function ReportPage() {
 
   return (
     <main className="mx-auto w-full max-w-[1120px] px-6 py-8 md:px-8">
-      <header className="mb-8 flex items-center justify-between">
+      <header className="mb-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <PageNav />
         <Link href="/" className="flex items-baseline gap-3">
           <span className="display-serif text-[20px] tracking-[0.18em]">PRISM</span>
           <span className="label-en">Evidence Observatory</span>
         </Link>
-        <span className="label-en">{id}</span>
+        <span className="label-en ml-auto">{id}</span>
       </header>
 
       {state === "loading" ? (

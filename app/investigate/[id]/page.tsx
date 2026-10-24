@@ -20,6 +20,7 @@ import { cacheBundle, saveBundle } from "@/lib/storage/local";
 import SourceCard from "@/components/evidence/SourceCard";
 import ReportView from "@/components/report/ReportView";
 import Link from "next/link";
+import PageNav from "@/components/nav/PageNav";
 import {
   EVIDENCE_RELATIONS,
   RELATION_LABEL,
@@ -581,12 +582,13 @@ function Shell({
   return (
     <main className="relative min-h-dvh">
       <div className="mx-auto w-full max-w-[1120px] px-6 py-8 md:px-8">
-        <header className="mb-8 flex items-center justify-between">
+        <header className="mb-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <PageNav />
           <Link href="/" className="flex items-baseline gap-3">
             <span className="display-serif text-[20px] tracking-[0.18em]">PRISM</span>
             <span className="label-en">Evidence Observatory</span>
           </Link>
-          <div className="flex items-center gap-4 text-[12.5px]">
+          <div className="ml-auto flex items-center gap-4 text-[12.5px]">
             {investigationId ? (
               <span className="label-en">{investigationId}</span>
             ) : null}
