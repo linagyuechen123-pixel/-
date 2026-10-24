@@ -1,0 +1,21 @@
+{
+  "claim": "微波炉加热塑料饭盒会释放致癌物质",
+  "flow": "screenshot-ocr",
+  "startedAt": "2026-10-24T10:43:42.433Z",
+  "origin": "https://prism-evidence.app.workbuddy.host",
+  "log": [
+    "t0 打开首页",
+    "t1 进入截图查证页",
+    "t2 上传一张短视频截图",
+    "t3 浏览器本地 OCR 开始识别",
+    "t4 OCR 完成：某 短 视频 科普 账号\n微波 炉 加 热 塑 料 饭盒 会…",
+    "t5 命题解剖室：识别出的说法被拆成子命题",
+    "t6 证据调查室：多轮真实搜索",
+    "t7 调查报告与来源列表生成"
+  ],
+  "frames": 119,
+  "mp4": "demo/05-演示录屏/03-截图查证OCR/investigation-ocr.mp4",
+  "note": "真实 Chrome 驱动公开站点，上传截图 → 本地 OCR → 多轮真实搜索 → 报告，定格截图序列合成，无剪辑、无预置数据。",
+  "fps": 3,
+  "durationSec": 39.7
+}

@@ -1,6 +1,10 @@
 {
-  "query": "保温杯装碳酸饮料会腐蚀内胆吗",
+  "query": "喝咖啡会导致骨质疏松吗",
   "steps": [
+    {
+      "level": "info",
+      "message": "补回 sharecode 重新落地调查页"
+    },
     {
       "level": "info",
       "message": "已点击立即复查，等待真实检索"
@@ -11,13 +15,13 @@
     },
     {
       "level": "assessment",
-      "message": "增量判断 changed=false：新证据多为重复已有观点：碳酸饮料呈酸性，长时间存放可能腐蚀不锈钢内胆并致重金属迁移；但未提供定量或直接实验证据，仅补充材质差异与使用禁忌，未实质改变先前部分支持结论的成立程度。"
+      "message": "增量判断 changed=false：新证据均指向同一结论：咖啡因仅轻度增加尿钙排出，在钙摄入充足时适量饮用影响有限，仅在长期过量（每日超300mg咖啡因或3杯以上）且钙摄入不足、缺乏日照等多重因素叠加时才有风险，与先前partially_supported状态一致，未实质改变结论。"
     }
   ],
   "screenshots": [
-    "D:\\workbuddy\\2026-10-24-13-27-40\\demo\\06-持续盯梢\\01-report-watch.png",
-    "D:\\workbuddy\\2026-10-24-13-27-40\\demo\\06-持续盯梢\\02-monitor-list.png",
-    "D:\\workbuddy\\2026-10-24-13-27-40\\demo\\06-持续盯梢\\03-monitor-diff.png"
+    "demo\\06-持续盯梢\\01-report-watch.png",
+    "demo\\06-持续盯梢\\02-monitor-list.png",
+    "demo\\06-持续盯梢\\03-monitor-diff.png"
   ],
   "checks": [
     {
@@ -36,7 +40,7 @@
     {
       "name": "盯梢目标已写入本地存储",
       "ok": true,
-      "note": "3 条复查查询词 / 初始快照 29 条来源"
+      "note": "3 条复查查询词 / 初始快照 25 条来源"
     },
     {
       "name": "监控中心列出盯梢目标",
@@ -66,66 +70,66 @@
   "searchConfigured": true,
   "watchTarget": {
     "count": 1,
-    "claim": "保温杯装碳酸饮料会腐蚀内胆吗",
+    "claim": "喝咖啡会导致骨质疏松吗",
     "queries": [
-      "碳酸饮料 不锈钢 腐蚀",
-      "304不锈钢 耐碳酸 腐蚀",
-      "保温杯 碳酸饮料 爆炸 风险"
+      "咖啡因 骨密度 影响 研究",
+      "咖啡 摄入量 骨质疏松 骨折 风险",
+      "咖啡因 钙吸收 钙排泄 机制"
     ],
-    "snapshotUrls": 29,
+    "snapshotUrls": 25,
     "resultStatus": "partially_supported"
   },
   "diff": {
     "lastDiff": {
-      "checkedAt": "2026-10-24T10:31:43.001Z",
+      "checkedAt": "2026-10-24T10:46:04.859Z",
       "newSources": [
         {
-          "title": "GB/T29606 保温杯国内销售做什么标准 你的保温杯选对了吗?注意6点不踩雷",
-          "url": "https://shenzhen.11467.com/info/30294324.htm",
-          "siteName": "顺企网",
-          "publishedAt": "2026/10/20 08:30:00"
-        },
-        {
-          "title": "用恒温恒湿试验箱里的不锈钢内胆解决锈蚀_广东皓天检测仪器有限公司",
-          "url": "https://wap.app17.com/c172773/article/d8202643.html",
-          "siteName": "阿仪网",
+          "title": "35岁打个喷嚏就断肋骨?咖啡不是元凶",
+          "url": "https://cloud.kepuchina.cn/newSearch/imgText?id=7511831042382495744",
+          "siteName": "科普中国网",
           "publishedAt": "2026/10/20 00:00:00"
         },
         {
-          "title": "不锈钢保温杯:跳出保温参数内卷,读懂一杯温水背后的供应链真相",
-          "url": "https://www.sohu.com/a/1092045947_122979837",
-          "siteName": "搜狐网",
-          "publishedAt": "2026/10/24 10:50:00"
+          "title": "天天喝咖啡,1个喷嚏震断肋骨?咖啡还能喝吗?_黄河新闻网",
+          "url": "https://www.sxgov.cn/content/2026-10/21/content_13703349.htm",
+          "siteName": "黄河新闻网",
+          "publishedAt": "2026/10/21 23:29:22"
         },
         {
-          "title": "CMA针对不锈钢保温杯GB 4806.9-2023合格要求-国家食品接触材料检测重点实验室 视频",
-          "url": "https://shenzhen01136945.11467.com/product/34873193.asp",
-          "siteName": "顺企网",
-          "publishedAt": "2026/10/18 08:38:00"
+          "title": "打噴嚏就骨折咖啡背鍋?警惕脆性骨折",
+          "url": "https://big5.cctv.com/gate/big5/news.cctv.com/2026/10/20/ARTIh52JM2J5uEmPSVl198jL261020.shtml",
+          "siteName": "央视国际",
+          "publishedAt": "2026/10/20 22:21:53"
         },
         {
-          "title": "可乐能装进保温杯中吗",
-          "url": "http://www.qicaisi.com/bk-2839789.shtml",
-          "siteName": "七彩丝",
-          "publishedAt": "2026/10/18 00:00:00"
+          "title": "女子每天两杯咖啡,打喷嚏断了一根肋骨!咖啡会导致骨质疏松吗?",
+          "url": "https://m.gmw.cn/2026-10/23/content_1304578525.htm",
+          "siteName": "光明网",
+          "publishedAt": "2026/10/23 14:32:00"
         },
         {
-          "title": "1688 buying guide: 2026 fall/winter 304 stainless steel insulated shaker cup selection",
-          "url": "https://wiki.1688.com/en/shaker/WKg1pyceckbnk0",
-          "siteName": "阿里1688",
-          "publishedAt": "2026/10/20 01:46:40"
+          "title": "35岁女子每天2杯咖啡,打喷嚏竟然震断肋骨? 医生提醒:不能只怪咖啡丨深夜聊医聊",
+          "url": "https://news.qq.com/rain/a/20261020A0FG9000",
+          "siteName": "腾讯新闻",
+          "publishedAt": "2026/10/20 23:02:20"
         },
         {
-          "title": "这种保温杯别再用了,可能引发慢性中毒",
-          "url": "http://gzylhyzx.com/detail.html?cpid=T17&newsId=12795815&qid=W7",
-          "siteName": "每日热点",
-          "publishedAt": "2026/10/20 05:20:11"
+          "title": "“女子每天2杯咖啡打喷嚏震断肋骨”上热搜,喝咖啡真的会导致骨质疏松吗?",
+          "url": "https://www.toutiao.com/article/7699762089800041000/",
+          "siteName": "今日头条",
+          "publishedAt": "2026/10/23 15:29:32"
         },
         {
-          "title": "家用不锈钢该选304还是316?钢厂工人提醒才发现,很多人都买错了!",
-          "url": "https://c.m.163.com/news/a/L9KRRG4Q0520F560.html",
-          "siteName": "网易新闻客户端",
-          "publishedAt": "2026/10/19 22:01:00"
+          "title": "警惕  热搜第一!打喷嚏震断肋骨!网友:天塌了!",
+          "url": "https://m.gmw.cn/2026-10/21/content_1304577602.htm",
+          "siteName": "光明网",
+          "publishedAt": "2026/10/21 09:22:00"
+        },
+        {
+          "title": "打喷嚏､拥抱导致骨折,咖啡背了锅!提醒:警惕脆性骨折",
+          "url": "https://www.toutiao.com/article/7699271149955465771/",
+          "siteName": "今日头条",
+          "publishedAt": "2026/10/22 07:44:53"
         }
       ],
       "freshness": "d7",
@@ -134,14 +138,14 @@
       "statusChanged": false,
       "assessment": {
         "changed": false,
-        "reason": "新证据多为重复已有观点：碳酸饮料呈酸性，长时间存放可能腐蚀不锈钢内胆并致重金属迁移；但未提供定量或直接实验证据，仅补充材质差异与使用禁忌，未实质改变先前部分支持结论的成立程度。"
+        "reason": "新证据均指向同一结论：咖啡因仅轻度增加尿钙排出，在钙摄入充足时适量饮用影响有限，仅在长期过量（每日超300mg咖啡因或3杯以上）且钙摄入不足、缺乏日照等多重因素叠加时才有风险，与先前partially_supported状态一致，未实质改变结论。"
       },
       "searchCount": 3,
       "failedCount": 0,
       "error": null
     },
     "snapshotCount": 2,
-    "lastCheckedAt": "2026-10-24T10:31:43.001Z"
+    "lastCheckedAt": "2026-10-24T10:46:04.859Z"
   },
   "jsErrors": 0
 }

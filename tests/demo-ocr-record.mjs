@@ -124,7 +124,17 @@ try {
     waitUntil: "networkidle2",
     timeout: 90_000,
   });
-  await page.waitForSelector("#claim-input", { timeout: 60_000 });
+  try {
+    await page.waitForSelector("#claim-input", { timeout: 90_000 });
+  } catch (err) {
+    const probe = await page.evaluate(() => ({
+      url: location.href,
+      title: document.title,
+      bodyHead: (document.body.innerText || "").slice(0, 400),
+    }));
+    console.error("首页未就绪，诊断：", JSON.stringify(probe));
+    throw err;
+  }
   await sleep(1500);
   log.push("t0 打开首页");
 

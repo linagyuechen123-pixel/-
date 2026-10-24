@@ -19,7 +19,11 @@ const puppeteer = require_(
     "C:/Users/lyc/.workbuddy/binaries/node/workspace/node_modules/puppeteer-core",
 );
 
+// 线上站点有分享网关门禁，每个请求都要带 sharecode：
+// 这里把 BASE 上的查询串摘出来，所有导航都带上，避免站内跳转被 403 拦下。
 const BASE = process.env.PRISM_BASE_URL || "http://127.0.0.1:3111";
+const SHARE = BASE.includes("?") ? BASE.slice(BASE.indexOf("?")) : "";
+const ORIGIN = BASE.split("?")[0].replace(/\/+$/, "");
 const CHROME =
   process.env.PRISM_CHROME_PATH ||
   "C:\\Users\\lyc\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe";
@@ -74,7 +78,10 @@ async function run() {
   };
 
   // 1. 首页发起调查
-  await page.goto(BASE, { waitUntil: "networkidle2", timeout: 120_000 });
+  await page.goto(`${ORIGIN}/${SHARE}`, {
+    waitUntil: "networkidle2",
+    timeout: 120_000,
+  });
   await page.waitForSelector("#claim-input", { timeout: 60_000 });
   const health = await page.evaluate(async () => {
     const r = await fetch(`/api/health${location.search}`);
@@ -91,6 +98,17 @@ async function run() {
   await page.waitForFunction(() => location.pathname.startsWith("/investigate/"), {
     timeout: 60_000,
   });
+
+  // 线上分享门禁会在站内跳转时丢掉 sharecode，调查页被网关 403 拦成「链接不完整」。
+  // 草稿存在 sessionStorage，补回参数重新落地同一 URL，流程即可衔接。
+  if (SHARE && !page.url().includes("sharecode=")) {
+    const sep = page.url().includes("?") ? "&" : "?";
+    await page.goto(`${page.url()}${sep}${SHARE.slice(1)}`, {
+      waitUntil: "networkidle2",
+      timeout: 120_000,
+    });
+    report.steps.push({ level: "info", message: "补回 sharecode 重新落地调查页" });
+  }
 
   // 2. 命题解剖 → 开始调查
   await page.waitForSelector("textarea", { timeout: 150_000 });
@@ -150,7 +168,10 @@ async function run() {
   await shot("01-report-watch");
 
   // 5. 监控中心
-  await page.goto(`${BASE}/monitor`, { waitUntil: "networkidle2", timeout: 120_000 });
+  await page.goto(`${ORIGIN}/monitor${SHARE}`, {
+    waitUntil: "networkidle2",
+    timeout: 120_000,
+  });
   // dev 模式首次编译该路由需要时间，必须等页面真正渲染出内容再断言
   await page.waitForFunction(
     () =>
