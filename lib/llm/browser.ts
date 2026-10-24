@@ -312,6 +312,79 @@ export async function judgeEvidenceWithModel(args: {
   return runJsonPrompt(SYSTEM_EVIDENCE, prompt, validateJudgements);
 }
 
+/* ---------------- §10 持续盯梢：新增证据的增量评估 ---------------- */
+
+const SYSTEM_DELTA = [
+  "你是 PRISM 事实调查系统的变化评估器。",
+  "任务：判断「本次新检索到的证据」是否足以改变先前已经得出的结论状态。",
+  "硬约束：",
+  "1. 只能依据用户提供的新增来源摘要与先前结论判断，禁止使用你自己的知识补充事实。",
+  "2. changed 只能是 true 或 false。只有当新证据实质改变了先前结论的成立程度时才为 true。",
+  "3. 无法判断、新证据与命题无关、或只是重复已有观点时，changed 必须为 false，并在 reason 中说明原因。",
+  "4. 严禁生成来源、网址或标题。",
+  "5. reason 不超过 120 字，必须说明判断依据。",
+  "6. 只返回 JSON。",
+].join("\n");
+
+export interface DeltaAssessment {
+  changed: boolean;
+  reason: string;
+  /** 模型建议的新结论状态，仅在 changed 为 true 且模型给出合法取值时存在 */
+  suggestedStatus:
+    | "supported"
+    | "partially_supported"
+    | "conflicting"
+    | "insufficient_evidence"
+    | null;
+}
+
+const OK_STATUSES = new Set([
+  "supported",
+  "partially_supported",
+  "conflicting",
+  "insufficient_evidence",
+]);
+
+function validateDelta(v: unknown): DeltaAssessment | null {
+  const r = v as Record<string, unknown>;
+  if (typeof r.changed !== "boolean") return null;
+  const reason =
+    typeof r.reason === "string" ? stripRefusalBoilerplate(r.reason) : "";
+  if (!reason) return null;
+  const s = r.suggestedStatus;
+  const suggestedStatus =
+    typeof s === "string" && OK_STATUSES.has(s)
+      ? (s as DeltaAssessment["suggestedStatus"])
+      : null;
+  return { changed: r.changed, reason: reason.slice(0, 200), suggestedStatus };
+}
+
+export async function assessDeltaWithModel(args: {
+  originalClaim: string;
+  previousStatus: string;
+  newSources: { title: string; url: string; siteName: string | null; snippet: string }[];
+}): Promise<DeltaAssessment | LlmFailure> {
+  const lines = args.newSources
+    .map(
+      (s, i) =>
+        `[${i + 1}] 标题：${s.title}\n站点：${s.siteName ?? "未知"}\n摘要：${s.snippet.slice(0, 400)}`,
+    )
+    .join("\n\n");
+
+  const prompt = [
+    `原始说法：${args.originalClaim}`,
+    `先前结论状态：${args.previousStatus}`,
+    "",
+    "本次复查新检索到的来源摘要（只能依据这些内容判断）：",
+    lines,
+    "",
+    "输出 JSON：",
+    '{"changed":true或false,"reason":"判断依据，不超过120字","suggestedStatus":"若changed为true，给出建议的新状态 supported|partially_supported|conflicting|insufficient_evidence；否则省略"}',
+  ].join("\n");
+
+  return runJsonPrompt(SYSTEM_DELTA, prompt, validateDelta);
+}
+
 /* ---------------- §7.2 阶段 8：报告 ---------------- */
 
 export interface ReportDraft {

@@ -18,6 +18,9 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      // 本地隔离构建目录（PRISM_DIST_DIR 指定，见 next.config.ts）
+      "b*/**",
+      "out-*/**",
     ],
   },
 ];

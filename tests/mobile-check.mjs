@@ -127,7 +127,10 @@ try {
   await page.waitForFunction(() => location.pathname.startsWith("/investigate/"), {
     timeout: 60_000,
   });
-  const id = await page.evaluate(() => location.pathname.split("/")[2]);
+  const investigationId = await page.evaluate(
+    () => location.pathname.split("/")[2],
+  );
+  console.log(`  调查编号：${investigationId}`);
 
   // 3. 子命题界面
   await page.waitForSelector("textarea", { timeout: 90_000 });

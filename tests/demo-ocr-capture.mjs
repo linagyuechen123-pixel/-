@@ -155,7 +155,7 @@ async function run() {
 
   try {
     await page.waitForSelector("textarea", { timeout: 120_000 });
-  } catch (e) {
+  } catch {
     const probe = await page.evaluate(() => ({
       url: location.href,
       text: (document.body.innerText || "").slice(0, 600),

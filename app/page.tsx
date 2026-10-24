@@ -109,7 +109,7 @@ export default function HomePage() {
               href="/monitor"
               className="text-[var(--prism-silver)] transition-colors hover:text-[var(--prism-accent)]"
             >
-              监控中心
+              持续盯梢
             </Link>
             <Link
               href="/upload"

@@ -7,9 +7,11 @@
  * 尚未解决的问题、后续核验建议、调查执行记录。
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SourceCard from "@/components/evidence/SourceCard";
 import Link from "next/link";
+import { createWatchTarget } from "@/lib/investigation/watch";
+import { isWatched, saveTarget } from "@/lib/storage/watch";
 import {
   RESULT_STATUS_LABEL,
   type Evidence,
@@ -21,6 +23,11 @@ import {
 export default function ReportView({ bundle }: { bundle: InvestigationBundle }) {
   const { report, evidence, sources, rounds, claims, investigation } = bundle;
   const [showRounds, setShowRounds] = useState(false);
+  const [watched, setWatched] = useState(false);
+
+  useEffect(() => {
+    setWatched(isWatched(investigation.id));
+  }, [investigation.id]);
 
   if (!report) {
     return (
@@ -308,6 +315,54 @@ export default function ReportView({ bundle }: { bundle: InvestigationBundle }) 
             ))}
           </ul>
         ) : null}
+      </section>
+
+      <section className="mt-8 glass-panel p-5">
+        <h2 className="label-en">持续盯梢 / Keep watching</h2>
+        <p className="mt-3 max-w-[72ch] text-[13.5px] leading-relaxed text-[var(--prism-silver)]">
+          把这个说法加入盯梢列表，监控中心会按设定的间隔重新执行本次调查用过的查询词，
+          比对新出现的来源。每次复查都是真实搜索；自动复查只在本站页面保持打开时触发，
+          因为部署环境没有服务端定时任务。
+        </p>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          {watched ? (
+            <>
+              <span
+                className="label-en border px-4 py-2"
+                style={{
+                  color: "var(--prism-accent)",
+                  borderColor: "var(--prism-accent)66",
+                }}
+              >
+                已在盯梢列表
+              </span>
+              <Link
+                href="/monitor"
+                className="border border-[var(--prism-hairline-strong)] px-5 py-2.5 text-[13px] hover:border-[var(--prism-accent)] hover:text-[var(--prism-accent)]"
+              >
+                去监控中心
+              </Link>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                const target = createWatchTarget({
+                  investigationId: investigation.id,
+                  claim: investigation.originalClaim,
+                  rounds,
+                  sources,
+                  resultStatus: report.resultStatus ?? null,
+                });
+                saveTarget(target);
+                setWatched(true);
+              }}
+              className="border border-[var(--prism-hairline-strong)] px-5 py-2.5 text-[13px] hover:border-[var(--prism-accent)] hover:text-[var(--prism-accent)]"
+            >
+              盯住这个说法
+            </button>
+          )}
+        </div>
       </section>
 
       <footer className="mt-10 flex flex-wrap gap-3 border-t border-[var(--prism-hairline)] pt-6">

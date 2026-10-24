@@ -36,6 +36,7 @@ yarn-error.log*
 
 # 本地隔离构建产物（默认产物目录仍为 .next）
 /build
+/b*/
 /out-*
 /tsconfig.tsbuildinfo
 

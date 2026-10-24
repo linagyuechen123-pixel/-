@@ -25,7 +25,10 @@ const ORIGIN = "https://prism-evidence.app.workbuddy.host";
 const SHARE = "?sharecode=EAKUMP27DH";
 
 const claim = process.argv[2] || "不锈钢保温杯装碳酸饮料会腐蚀内胆";
-const OUT = path.join(process.cwd(), "demo", "05-演示录屏");
+const OUT = path.resolve(
+  process.env.PRISM_RECORD_OUT ||
+    path.join(process.cwd(), "demo", "05-演示录屏"),
+);
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -47,7 +50,6 @@ async function clickByText(page, selector, texts) {
 if (!fs.existsSync(CHROME)) throw new Error(`未找到 Chrome：${CHROME}`);
 fs.mkdirSync(OUT, { recursive: true });
 
-const webmPath = path.join(OUT, "investigation.webm");
 const mp4Path = path.join(OUT, "investigation.mp4");
 const framesDir = path.join(OUT, "frames");
 fs.rmSync(framesDir, { recursive: true, force: true });

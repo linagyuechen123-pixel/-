@@ -1,0 +1,147 @@
+{
+  "query": "保温杯装碳酸饮料会腐蚀内胆吗",
+  "steps": [
+    {
+      "level": "info",
+      "message": "已点击立即复查，等待真实检索"
+    },
+    {
+      "level": "diff",
+      "message": "时间窗 d7 内新增 8 条来源 / 失败 0 次"
+    },
+    {
+      "level": "assessment",
+      "message": "增量判断 changed=false：新证据多为重复已有观点：碳酸饮料呈酸性，长时间存放可能腐蚀不锈钢内胆并致重金属迁移；但未提供定量或直接实验证据，仅补充材质差异与使用禁忌，未实质改变先前部分支持结论的成立程度。"
+    }
+  ],
+  "screenshots": [
+    "D:\\workbuddy\\2026-10-24-13-27-40\\demo\\06-持续盯梢\\01-report-watch.png",
+    "D:\\workbuddy\\2026-10-24-13-27-40\\demo\\06-持续盯梢\\02-monitor-list.png",
+    "D:\\workbuddy\\2026-10-24-13-27-40\\demo\\06-持续盯梢\\03-monitor-diff.png"
+  ],
+  "checks": [
+    {
+      "name": "搜索服务已配置",
+      "ok": true,
+      "note": "searchConfigured=true"
+    },
+    {
+      "name": "报告页出现「盯住这个说法」",
+      "ok": true
+    },
+    {
+      "name": "点击后进入已盯梢状态",
+      "ok": true
+    },
+    {
+      "name": "盯梢目标已写入本地存储",
+      "ok": true,
+      "note": "3 条复查查询词 / 初始快照 29 条来源"
+    },
+    {
+      "name": "监控中心列出盯梢目标",
+      "ok": true
+    },
+    {
+      "name": "复查执行了真实搜索",
+      "ok": true,
+      "note": "执行 3 次查询，失败 0 次"
+    },
+    {
+      "name": "新增来源均带可点击外链",
+      "ok": true,
+      "note": "8 条新增来源"
+    },
+    {
+      "name": "模型对新增证据给出增量判断",
+      "ok": true,
+      "note": "判定不足以改变结论"
+    },
+    {
+      "name": "无页面级 JS 异常",
+      "ok": true,
+      "note": "0 条"
+    }
+  ],
+  "searchConfigured": true,
+  "watchTarget": {
+    "count": 1,
+    "claim": "保温杯装碳酸饮料会腐蚀内胆吗",
+    "queries": [
+      "碳酸饮料 不锈钢 腐蚀",
+      "304不锈钢 耐碳酸 腐蚀",
+      "保温杯 碳酸饮料 爆炸 风险"
+    ],
+    "snapshotUrls": 29,
+    "resultStatus": "partially_supported"
+  },
+  "diff": {
+    "lastDiff": {
+      "checkedAt": "2026-10-24T10:31:43.001Z",
+      "newSources": [
+        {
+          "title": "GB/T29606 保温杯国内销售做什么标准 你的保温杯选对了吗?注意6点不踩雷",
+          "url": "https://shenzhen.11467.com/info/30294324.htm",
+          "siteName": "顺企网",
+          "publishedAt": "2026/10/20 08:30:00"
+        },
+        {
+          "title": "用恒温恒湿试验箱里的不锈钢内胆解决锈蚀_广东皓天检测仪器有限公司",
+          "url": "https://wap.app17.com/c172773/article/d8202643.html",
+          "siteName": "阿仪网",
+          "publishedAt": "2026/10/20 00:00:00"
+        },
+        {
+          "title": "不锈钢保温杯:跳出保温参数内卷,读懂一杯温水背后的供应链真相",
+          "url": "https://www.sohu.com/a/1092045947_122979837",
+          "siteName": "搜狐网",
+          "publishedAt": "2026/10/24 10:50:00"
+        },
+        {
+          "title": "CMA针对不锈钢保温杯GB 4806.9-2023合格要求-国家食品接触材料检测重点实验室 视频",
+          "url": "https://shenzhen01136945.11467.com/product/34873193.asp",
+          "siteName": "顺企网",
+          "publishedAt": "2026/10/18 08:38:00"
+        },
+        {
+          "title": "可乐能装进保温杯中吗",
+          "url": "http://www.qicaisi.com/bk-2839789.shtml",
+          "siteName": "七彩丝",
+          "publishedAt": "2026/10/18 00:00:00"
+        },
+        {
+          "title": "1688 buying guide: 2026 fall/winter 304 stainless steel insulated shaker cup selection",
+          "url": "https://wiki.1688.com/en/shaker/WKg1pyceckbnk0",
+          "siteName": "阿里1688",
+          "publishedAt": "2026/10/20 01:46:40"
+        },
+        {
+          "title": "这种保温杯别再用了,可能引发慢性中毒",
+          "url": "http://gzylhyzx.com/detail.html?cpid=T17&newsId=12795815&qid=W7",
+          "siteName": "每日热点",
+          "publishedAt": "2026/10/20 05:20:11"
+        },
+        {
+          "title": "家用不锈钢该选304还是316?钢厂工人提醒才发现,很多人都买错了!",
+          "url": "https://c.m.163.com/news/a/L9KRRG4Q0520F560.html",
+          "siteName": "网易新闻客户端",
+          "publishedAt": "2026/10/19 22:01:00"
+        }
+      ],
+      "freshness": "d7",
+      "fromStatus": "partially_supported",
+      "toStatus": "partially_supported",
+      "statusChanged": false,
+      "assessment": {
+        "changed": false,
+        "reason": "新证据多为重复已有观点：碳酸饮料呈酸性，长时间存放可能腐蚀不锈钢内胆并致重金属迁移；但未提供定量或直接实验证据，仅补充材质差异与使用禁忌，未实质改变先前部分支持结论的成立程度。"
+      },
+      "searchCount": 3,
+      "failedCount": 0,
+      "error": null
+    },
+    "snapshotCount": 2,
+    "lastCheckedAt": "2026-10-24T10:31:43.001Z"
+  },
+  "jsErrors": 0
+}
