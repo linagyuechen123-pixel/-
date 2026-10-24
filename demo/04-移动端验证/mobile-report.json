@@ -1,0 +1,65 @@
+{
+  "timestamp": "2026-10-24T08:23:55.522Z",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "checks": [
+    {
+      "name": "首页加载 + 搜索服务就绪",
+      "pass": true,
+      "detail": "{\"searchConfigured\":true,\"checkedAt\":\"2026-10-24T08:23:57.543Z\"}"
+    },
+    {
+      "name": "首页无横向溢出",
+      "pass": true,
+      "detail": "scrollWidth=390 clientWidth=390"
+    },
+    {
+      "name": "移动端可提交调查",
+      "pass": true,
+      "detail": "已点击启动按钮"
+    },
+    {
+      "name": "子命题界面渲染",
+      "pass": true,
+      "detail": "textarea 数量=4"
+    },
+    {
+      "name": "可触发多轮搜索",
+      "pass": true,
+      "detail": "已进入搜索流程"
+    },
+    {
+      "name": "移动端可完成调查并产出报告",
+      "pass": true,
+      "detail": "耗时约 —"
+    },
+    {
+      "name": "报告含可点击原始来源",
+      "pass": true,
+      "detail": "外链 194 条，示例 https://www.dayi.org.cn/qa/274812?from=sg"
+    },
+    {
+      "name": "来源链接指向外部站点",
+      "pass": true,
+      "detail": "无误指自身域名的情况"
+    },
+    {
+      "name": "运行期无应用级 JS 异常",
+      "pass": true,
+      "detail": "JS 错误 0 条（另有 2 条资源层 403，源自平台分享网关拦截 /favicon.ico，非应用缺陷）"
+    }
+  ],
+  "screenshots": [
+    "demo/04-移动端验证/01-home.png",
+    "demo/04-移动端验证/02-claims.png",
+    "demo/04-移动端验证/03-report.png"
+  ],
+  "errors": [],
+  "jsErrors": [],
+  "assetNoises": [
+    "Failed to load resource: the server responded with a status of 403 ()",
+    "Failed to load resource: the server responded with a status of 403 ()"
+  ]
+}

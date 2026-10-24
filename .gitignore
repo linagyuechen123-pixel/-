@@ -1,0 +1,55 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+!.env.example
+
+# 本地隔离构建产物（默认产物目录仍为 .next）
+/build
+/out-*
+/tsconfig.tsbuildinfo
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# 演示截图体积较大（约 58M），通过赛事表单提交，不入源码仓库。
+# 调查记录 record.json 保留入库，作为三次真实查询的证据链。
+# 可用 node tests/demo-capture.mjs 随时重新生成截图。
+demo/**/*.png
+
+# 本地工作数据（工作区记忆、应用登记），不进公开仓库
+.workbuddy/

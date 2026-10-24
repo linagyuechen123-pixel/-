@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+/* ============================================================
+   PRISM — The Evidence Observatory
+   Design tokens (see PRISM-HO-001 §14 视觉设计系统)
+   ============================================================ */
+
+:root {
+  /* 主色 */
+  --prism-void: #090b10;
+  --prism-void-soft: #0d1017;
+  --prism-glass: #12161f;
+  --prism-ink: #f4f0e8;
+  --prism-accent: #d8ff75;
+
+  /* 辅助：冷银 / 透明灰 */
+  --prism-silver: #8a93a3;
+  --prism-silver-dim: #5c6472;
+  --prism-hairline: rgba(244, 240, 232, 0.12);
+  --prism-hairline-strong: rgba(244, 240, 232, 0.24);
+
+  /* 光谱色：仅用于证据关系，不得普遍使用 */
+  --prism-spectral-supports: #d8ff75;
+  --prism-spectral-contradicts: #ff6b6b;
+  --prism-spectral-context: #6bb8ff;
+  --prism-spectral-unverified: #c9a7ff;
+
+  /* 排版 */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC",
+    sans-serif;
+  --font-serif: "Songti SC", "SimSun", Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    monospace;
+
+  /* 节奏 */
+  --dur-fast: 160ms;
+  --dur-base: 320ms;
+  --dur-slow: 720ms;
+  --ease-prism: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --radius-prism: 2px;
+}
+
+@theme inline {
+  --color-void: var(--prism-void);
+  --color-void-soft: var(--prism-void-soft);
+  --color-glass: var(--prism-glass);
+  --color-ink: var(--prism-ink);
+  --color-accent: var(--prism-accent);
+  --color-silver: var(--prism-silver);
+  --color-silver-dim: var(--prism-silver-dim);
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-mono: var(--font-mono);
+}
+
+* {
+  border-color: var(--prism-hairline);
+}
+
+html,
+body {
+  background: var(--prism-void);
+  color: var(--prism-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+::selection {
+  background: var(--prism-accent);
+  color: var(--prism-void);
+}
+
+:focus-visible {
+  outline: 2px solid var(--prism-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- 版式层级 ---------- */
+
+.label-en {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--prism-silver);
+}
+
+.display-serif {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- 玻璃 / 毛发线 ---------- */
+
+.glass-panel {
+  background: linear-gradient(
+    180deg,
+    rgba(18, 22, 31, 0.72) 0%,
+    rgba(9, 11, 16, 0.72) 100%
+  );
+  border: 1px solid var(--prism-hairline);
+  border-radius: var(--radius-prism);
+  backdrop-filter: blur(12px);
+}
+
+.hairline {
+  border-color: var(--prism-hairline);
+}
+
+/* ---------- 减少动态效果（§16.2） ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- 液态黑镜：局部画布（§15.1） ---------- */
+
+.mirror-field {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.mirror-field::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+      circle at var(--mirror-x, 50%) var(--mirror-y, 50%),
+      rgba(216, 255, 117, 0.16) 0%,
+      rgba(216, 255, 117, 0) 42%
+    ),
+    radial-gradient(
+      circle at var(--mirror-x, 50%) var(--mirror-y, 50%),
+      rgba(244, 240, 232, 0.08) 0%,
+      rgba(9, 11, 16, 0) 60%
+    );
+  opacity: var(--mirror-intensity, 0);
+  transition: opacity var(--dur-base) var(--ease-prism);
+  mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mirror-field::after {
+    opacity: 0;
+  }
+}
