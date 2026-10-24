@@ -8,6 +8,7 @@
  */
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import SourceCard from "@/components/evidence/SourceCard";
 import Link from "next/link";
 import { createWatchTarget } from "@/lib/investigation/watch";
@@ -19,6 +20,11 @@ import {
   type InvestigationBundle,
   type SearchResult,
 } from "@/types/prism";
+
+const EvidenceNetwork = dynamic(
+  () => import("@/components/scene/EvidenceNetwork"),
+  { ssr: false },
+);
 
 export default function ReportView({ bundle }: { bundle: InvestigationBundle }) {
   const { report, evidence, sources, rounds, claims, investigation } = bundle;
@@ -46,6 +52,24 @@ export default function ReportView({ bundle }: { bundle: InvestigationBundle }) 
   const evidenceById = new Map<string, Evidence>(evidence.map((e) => [e.sourceId, e]));
   const status = RESULT_STATUS_LABEL[report.resultStatus];
 
+  // 证据关系网络的节点：主干 = 原命题，分枝 = 子命题，叶片 = 真实来源
+  // 直接计算而非 useMemo：这段在 report 判空之后，条件调用 Hook 会违反 Hook 规则
+  const claimIndex = new Map<string, number>();
+  claims.forEach((c, i) => claimIndex.set(c.id, i));
+  const orderCount = new Map<string, number>();
+  const networkNodes = evidence.map((e) => {
+    const key = e.claimId ?? "root";
+    const order = orderCount.get(key) ?? 0;
+    orderCount.set(key, order + 1);
+    return {
+      id: e.id,
+      claimId: e.claimId,
+      relation: (e.userRelation ?? e.relation) as EvidenceRelation,
+      branchIndex: claimIndex.get(e.claimId ?? "") ?? 0,
+      order,
+    };
+  });
+
   const renderGroup = (title: string, rel: EvidenceRelation, empty: string) => {
     const items = evidence.filter((e) => (e.userRelation ?? e.relation) === rel);
     return (
@@ -56,8 +80,8 @@ export default function ReportView({ bundle }: { bundle: InvestigationBundle }) 
             {empty}
           </p>
         ) : (
-          <div className="mt-3 grid gap-3 md:grid-cols-2">
-            {items.map((e) => {
+          <div className="prism-evidence-flow mt-3 columns-1 md:columns-2 xl:columns-3">
+            {items.map((e, i) => {
               const s = byId.get(e.sourceId);
               if (!s) return null;
               return (
@@ -65,6 +89,7 @@ export default function ReportView({ bundle }: { bundle: InvestigationBundle }) 
                   key={e.id}
                   source={s}
                   evidence={e}
+                  index={i}
                   claimText={claims.find((c) => c.id === e.claimId)?.text ?? null}
                 />
               );
@@ -149,6 +174,56 @@ export default function ReportView({ bundle }: { bundle: InvestigationBundle }) 
         </ul>
       </section>
 
+      {networkNodes.length > 0 ? (
+        <section className="mt-8">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 className="label-en">证据关系网络 / Evidence Network</h2>
+            <span className="text-[11.5px] text-[var(--prism-silver-dim)]">
+              按住左键左右拖动可转动视角
+            </span>
+          </div>
+          <div className="relative mt-3 overflow-hidden border border-[var(--prism-hairline)] bg-[rgba(6,8,12,0.5)]">
+            <EvidenceNetwork
+              nodes={networkNodes}
+              className="h-[360px] w-full md:h-[460px]"
+            />
+            <div className="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-3 text-[11px] text-[var(--prism-silver-dim)]">
+              <span className="flex items-center gap-1.5">
+                <span
+                  className="inline-block h-2 w-2 rotate-45"
+                  style={{ background: "var(--prism-spectral-supports)" }}
+                />
+                支持
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span
+                  className="inline-block h-2 w-2 rotate-45"
+                  style={{ background: "var(--prism-spectral-contradicts)" }}
+                />
+                反对
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span
+                  className="inline-block h-2 w-2 rotate-45"
+                  style={{ background: "var(--prism-spectral-context)" }}
+                />
+                背景
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span
+                  className="inline-block h-2 w-2 rotate-45"
+                  style={{ background: "var(--prism-spectral-unverified)" }}
+                />
+                待核验
+              </span>
+            </div>
+            <p className="pointer-events-none absolute bottom-3 left-3 right-3 text-[11px] leading-relaxed text-[var(--prism-silver-dim)]">
+              主干为原始命题，分枝为拆解出的子命题，每一枚叶片是一组同向证据（叶片越大表示该组证据越多）；红色连线表示同一子命题下「支持」与「反对」之间存在冲突。
+            </p>
+          </div>
+        </section>
+      ) : null}
+
       {renderGroup(
         "支持证据 / Supports",
         "supports",
@@ -191,36 +266,35 @@ export default function ReportView({ bundle }: { bundle: InvestigationBundle }) 
       </section>
 
       <section className="mt-8">
-        <h2 className="label-en">来源列表 / Sources · {sources.length}</h2>
-        <ul className="mt-3 grid gap-2">
-          {sources.map((s) => {
-            const e = evidenceById.get(s.id);
-            return (
-              <li
-                key={s.id}
-                className="glass-panel flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <span className="min-w-0 flex-1">
-                  <a
-                    href={s.url}
-                    target="_blank"
-                    rel="noopener noreferrer external"
-                    className="text-[13.5px] underline decoration-dotted underline-offset-4 hover:text-[var(--prism-accent)]"
-                  >
+        <h2 className="label-en">来源清单 / Sources · {sources.length}</h2>
+        {sources.length === 0 ? (
+          <p className="mt-3 text-[13px] text-[var(--prism-silver-dim)]">
+            本次没有检索到来源。
+          </p>
+        ) : (
+          <ul className="mt-3 grid grid-cols-1 gap-1.5">
+            {sources.map((s) => {
+              const e = evidenceById.get(s.id);
+              return (
+                <li
+                  key={s.id}
+                  className="flex min-w-0 flex-col gap-1 border-l border-[var(--prism-hairline)] pl-3 text-[12.5px] text-[var(--prism-silver-dim)] sm:flex-row sm:items-center sm:gap-3"
+                >
+                  <span className="min-w-0 flex-1 truncate text-[var(--prism-silver)]">
                     {s.title}
-                  </a>
-                  <span className="ml-2 text-[12px] text-[var(--prism-silver-dim)]">
+                  </span>
+                  <span className="shrink-0">
                     {s.siteName ?? "站点未知"} ·{" "}
                     {s.publishedAt ? s.publishedAt : "日期未知"}
                   </span>
-                </span>
-                <span className="label-en shrink-0">
-                  {e ? (e.userRelation ?? e.relation) : "无证据记录"}
-                </span>
-              </li>
-            );
-          })}
-        </ul>
+                  <span className="label-en shrink-0">
+                    {e ? (e.userRelation ?? e.relation) : "无证据记录"}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        )}
         <p className="mt-3 text-[12.5px] leading-relaxed text-[var(--prism-silver-dim)]">
           {report.sourceRelationsNote}
         </p>

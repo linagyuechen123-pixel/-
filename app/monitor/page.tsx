@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import PageNav from "@/components/nav/PageNav";
+import AmbientBackdrop from "@/components/scene/AmbientBackdrop";
 import { recheckTarget } from "@/lib/investigation/watch";
 import { listTargets, removeTarget, saveTarget } from "@/lib/storage/watch";
 import {
@@ -115,7 +116,8 @@ export default function MonitorPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-[1000px] px-6 py-8 md:px-8">
+    <main className="relative mx-auto w-full max-w-[1000px] px-6 py-8 md:px-8">
+      <AmbientBackdrop />
       <header className="mb-8 flex flex-wrap items-center gap-x-6 gap-y-3">
         <PageNav />
         <Link href="/" className="flex items-baseline gap-3">

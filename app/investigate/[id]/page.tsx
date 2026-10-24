@@ -21,6 +21,7 @@ import SourceCard from "@/components/evidence/SourceCard";
 import ReportView from "@/components/report/ReportView";
 import Link from "next/link";
 import PageNav from "@/components/nav/PageNav";
+import AmbientBackdrop from "@/components/scene/AmbientBackdrop";
 import {
   EVIDENCE_RELATIONS,
   RELATION_LABEL,
@@ -432,11 +433,12 @@ export default function InvestigatePage() {
           {sources.length > 0 ? (
             <div className="mt-8">
               <div className="label-en mb-3">已获取来源 / {sources.length}</div>
-              <div className="grid gap-3 md:grid-cols-2">
-                {sources.map((s) => (
+              <div className="prism-evidence-flow mt-3 columns-1 md:columns-2 xl:columns-3">
+                {sources.map((s, i) => (
                   <SourceCard
                     key={s.id}
                     source={s}
+                    index={i}
                     claimText={
                       effectiveBundle?.claims.find(
                         (c) => c.id === rounds.find((r) => r.id === s.roundId)?.claimId,
@@ -540,13 +542,14 @@ function EvidenceClassification({
         ))}
       </div>
 
-      <div className="mt-5 grid gap-3 md:grid-cols-2">
-        {bundle.sources.map((s) => {
+      <div className="prism-evidence-flow mt-5 columns-1 md:columns-2 xl:columns-3">
+        {bundle.sources.map((s, i) => {
           const ev = evidenceById.get(s.id) ?? null;
           return (
             <SourceCard
               key={s.id}
               source={s}
+              index={i}
               evidence={
                 ev
                   ? {
@@ -581,6 +584,7 @@ function Shell({
 }) {
   return (
     <main className="relative min-h-dvh">
+      <AmbientBackdrop />
       <div className="mx-auto w-full max-w-[1120px] px-6 py-8 md:px-8">
         <header className="mb-8 flex flex-wrap items-center gap-x-6 gap-y-3">
           <PageNav />

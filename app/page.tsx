@@ -1,16 +1,23 @@
 "use client";
 
 /**
- * 首页：黑镜入口（§4.1 A）
+ * 首页：通天藤蔓 · 搜索入口
+ *
+ * 结构（简约优先）：
+ *   第一屏 = 3D 藤蔓场景（可拖动视角）+ 中下方搜索框
+ *   下滑   = 最近调查 + 一个深色方框（隐私说明 / 核验入口 / 检索入口 / 技术支持 / 声明）
  */
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import LiquidMirror from "@/components/mirror/LiquidMirror";
-import { LensTerm } from "@/components/motion/BilingualLens";
+import dynamic from "next/dynamic";
+import Link from "next/link";
 import { listRecent, type RecentSummary } from "@/lib/storage/local";
 import { RESULT_STATUS_LABEL, type ResultStatus } from "@/types/prism";
-import Link from "next/link";
+
+const VineScene = dynamic(() => import("@/components/scene/VineScene"), {
+  ssr: false,
+});
 
 const MAX_CLAIM_LENGTH = 300;
 const EXAMPLES = [
@@ -28,7 +35,6 @@ export default function HomePage() {
   const [searchReady, setSearchReady] = useState<
     "checking" | "ready" | "nokey" | "offline"
   >("checking");
-  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     setRecent(listRecent());
@@ -47,7 +53,7 @@ export default function HomePage() {
         if (alive) setSearchReady(d.searchConfigured ? "ready" : "nokey");
       })
       .catch(() => {
-        // 服务未就绪 / 请求失败 ≠ 密钥缺失，必须区分，避免误报
+        // 服务未就绪 ≠ 密钥缺失，必须区分，避免误报
         if (alive) setSearchReady("offline");
       })
       .finally(() => clearTimeout(timer));
@@ -77,8 +83,8 @@ export default function HomePage() {
         `prism:draft:${id}`,
         JSON.stringify({ claim: value, origin: "text", imagePreview: null }),
       );
-      setCollapsed(true);
-      setTimeout(() => router.push(`/investigate/${id}`), 620);
+      // 留出转场时间：搜索框先收缩发光，再进调查页
+      setTimeout(() => router.push(`/investigate/${id}`), 520);
     },
     [router],
   );
@@ -86,18 +92,12 @@ export default function HomePage() {
   const remaining = MAX_CLAIM_LENGTH - claim.length;
 
   return (
-    <main className="relative min-h-dvh overflow-hidden">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.55]"
-        style={{
-          background:
-            "radial-gradient(120% 80% at 50% -10%, rgba(216,255,117,0.10) 0%, rgba(9,11,16,0) 55%), radial-gradient(80% 60% at 110% 20%, rgba(107,184,255,0.08) 0%, rgba(9,11,16,0) 60%)",
-        }}
-      />
+    <main className="relative">
+      {/* ---------- 第一屏：藤蔓 + 搜索 ---------- */}
+      <section className="relative h-dvh w-full overflow-hidden">
+        <VineScene className="absolute inset-0 z-0" nodeCount={28} />
 
-      <div className="mx-auto flex min-h-dvh w-full max-w-[1180px] flex-col px-6 py-8 md:px-10">
-        <header className="flex items-center justify-between">
+        <header className="relative z-10 mx-auto flex w-full max-w-[1180px] items-center justify-between px-6 pt-8 md:px-10">
           <div className="flex items-baseline gap-3">
             <span className="display-serif text-[22px] tracking-[0.18em]">
               PRISM
@@ -106,145 +106,106 @@ export default function HomePage() {
           </div>
           <nav className="flex items-center gap-5 text-[13px]">
             <Link
-              href="/monitor"
-              className="text-[var(--prism-silver)] transition-colors hover:text-[var(--prism-accent)]"
-            >
-              持续盯梢
-            </Link>
-            <Link
               href="/upload"
-              className="text-[var(--prism-silver)] transition-colors hover:text-[var(--prism-accent)]"
+              className="prism-nav-btn prism-pop-in"
+              style={{ animationDelay: "0ms" }}
             >
               截图查证
+            </Link>
+            <Link
+              href="/monitor"
+              className="prism-nav-btn prism-pop-in"
+              style={{ animationDelay: "90ms" }}
+            >
+              持续盯梢
             </Link>
           </nav>
         </header>
 
-        <section className="flex flex-1 flex-col justify-center py-14 md:py-20">
-          <LiquidMirror collapsed={collapsed} className="w-full">
-            <div className="grid gap-10 md:grid-cols-[1.15fr_0.85fr] md:items-end">
-              <div>
-                <div className="label-en">
-                  Fact investigation · Real search only
-                </div>
-                <h1 className="display-serif mt-5 text-[clamp(2.6rem,7vw,5.4rem)] leading-[0.95]">
-                  证据
-                  <span className="mx-2 text-[var(--prism-accent)]">折射</span>
-                  室
-                </h1>
-                <p className="mt-6 max-w-[46ch] text-[15px] leading-[1.85] text-[var(--prism-silver)]">
-                  输入一句你在生活中听到的说法，或上传一张截图。PRISM
-                  会把它拆成可独立核验的
-                  <LensTerm en="CLAIM" zh="命题" />
-                  ，调用真实搜索引擎检索公开信息，区分支持与反对的
-                  <LensTerm en="EVIDENCE" zh="证据" />
-                  ，并给出一份每条结论都能追溯到原始
-                  <LensTerm en="SOURCE" zh="来源" />
-                  的报告。
-                </p>
-                <p className="mt-3 max-w-[46ch] text-[13px] leading-[1.8] text-[var(--prism-silver-dim)]">
-                  PRISM 不宣称能判断一切真假。证据不足时，它会明确告诉你证据不足。
-                </p>
-              </div>
+        {/* 中下方搜索区 */}
+        <div className="absolute inset-x-0 bottom-[13%] z-10 px-6 md:bottom-[15%]">
+          {/* 内容遮罩：保证标题与搜索框在 3D 场景上仍然可读 */}
+          <div
+            className="pointer-events-none absolute inset-x-0 -top-16 -bottom-24"
+            style={{
+              background:
+                "radial-gradient(58% 62% at 50% 52%, rgba(6,8,12,0.86) 0%, rgba(6,8,12,0.55) 46%, rgba(6,8,12,0) 78%)",
+            }}
+            aria-hidden="true"
+          />
+          <div className="relative mx-auto w-full max-w-[760px]">
+            <div className="label-en prism-pop-in text-center">
+              Fact investigation · real search only
+            </div>
+            <h1 className="display-serif prism-pop-in mt-4 text-center text-[clamp(2.2rem,6vw,4.2rem)] leading-[1.02]" style={{ animationDelay: "80ms" }}>
+              证据<span className="text-[var(--prism-accent)]">折射</span>室
+            </h1>
 
-              <div className="glass-panel p-5 md:p-6">
-                <label htmlFor="claim-input" className="label-en block">
-                  待核验的说法 / Claim
-                </label>
-                <textarea
-                  id="claim-input"
-                  value={claim}
-                  onChange={(e) => setClaim(e.target.value)}
-                  maxLength={MAX_CLAIM_LENGTH}
-                  rows={4}
+            <div
+              className={`prism-searchbar prism-pop-in mt-8 ${submitting ? "is-submitting" : ""}`}
+              style={{ animationDelay: "160ms" }}
+            >
+              <span className="prism-searchbar-glyph" aria-hidden="true">
+                ◈
+              </span>
+              <input
+                id="claim-input"
+                value={claim}
+                onChange={(e) => setClaim(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.nativeEvent.isComposing) {
+                    go(claim);
+                  }
+                }}
+                maxLength={MAX_CLAIM_LENGTH}
+                disabled={submitting}
+                placeholder="输入一句你想核实的话"
+                className="prism-searchbar-input"
+                aria-label="待核验的说法"
+              />
+              <button
+                type="button"
+                onClick={() => go(claim)}
+                disabled={submitting || claim.trim().length === 0}
+                className="prism-searchbar-btn"
+              >
+                {submitting ? "进入…" : "核查"}
+              </button>
+            </div>
+
+            <div
+              className="prism-pop-in mt-4 flex flex-wrap items-center justify-center gap-2"
+              style={{ animationDelay: "240ms" }}
+            >
+              {EXAMPLES.map((e) => (
+                <button
+                  key={e}
+                  type="button"
+                  onClick={() => setClaim(e)}
                   disabled={submitting}
-                  placeholder="例如：金属饭盒不能放进微波炉加热"
-                  className="mt-3 w-full resize-none border-0 border-b border-[var(--prism-hairline)] bg-transparent pb-3 text-[16px] leading-[1.7] text-[var(--prism-ink)] outline-none placeholder:text-[var(--prism-silver-dim)] focus:border-[var(--prism-accent)] disabled:opacity-50"
-                />
-                <div className="mt-2 flex items-center justify-between text-[12px] text-[var(--prism-silver-dim)]">
-                  <span>
-                    {error ? (
-                      <span className="text-[#ff6b6b]">{error}</span>
-                    ) : (
-                      "建议写成一句完整陈述，越具体越容易核验"
-                    )}
-                  </span>
-                  <span>{remaining}</span>
-                </div>
-
-                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                  <button
-                    type="button"
-                    onClick={() => go(claim)}
-                    disabled={submitting || claim.trim().length === 0}
-                    className="flex-1 border border-[var(--prism-accent)] bg-[var(--prism-accent)] px-5 py-3 text-[13px] font-medium uppercase tracking-[0.14em] text-[var(--prism-void)] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:border-[var(--prism-hairline)] disabled:bg-transparent disabled:text-[var(--prism-silver-dim)]"
-                  >
-                    {submitting ? "正在进入…" : "启动调查 / Investigate"}
-                  </button>
-                  <Link
-                    href="/upload"
-                    className="flex-1 border border-[var(--prism-hairline-strong)] px-5 py-3 text-center text-[13px] uppercase tracking-[0.14em] text-[var(--prism-ink)] transition-colors hover:border-[var(--prism-accent)] hover:text-[var(--prism-accent)]"
-                  >
-                    上传截图 / OCR
-                  </Link>
-                </div>
-
-                <div className="mt-5 border-t border-[var(--prism-hairline)] pt-4">
-                  <div className="label-en mb-2">示例</div>
-                  <div className="flex flex-wrap gap-2">
-                    {EXAMPLES.map((e) => (
-                      <button
-                        key={e}
-                        type="button"
-                        onClick={() => setClaim(e)}
-                        disabled={submitting}
-                        className="border border-[var(--prism-hairline)] px-3 py-1.5 text-left text-[12.5px] leading-snug text-[var(--prism-silver)] transition-colors hover:border-[var(--prism-accent)] hover:text-[var(--prism-accent)]"
-                      >
-                        {e}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
+                  className="prism-chip"
+                >
+                  {e}
+                </button>
+              ))}
             </div>
-          </LiquidMirror>
-        </section>
 
-        <section className="pb-6">
-          {recent.length > 0 ? (
-            <div className="mb-8">
-              <div className="label-en mb-3">最近的调查 / Recent</div>
-              <ul className="grid gap-2 sm:grid-cols-2">
-                {recent.slice(0, 4).map((r) => (
-                  <li key={r.id}>
-                    <a
-                      href={`/report/${r.id}`}
-                      className="glass-panel flex items-center justify-between gap-4 px-4 py-3 transition-colors hover:border-[var(--prism-accent)]"
-                    >
-                      <span className="truncate text-[13.5px]">{r.claim}</span>
-                      <span className="label-en shrink-0">
-                        {r.resultStatus
-                          ? (RESULT_STATUS_LABEL[r.resultStatus as ResultStatus]?.zh ??
-                            r.status)
-                          : r.status}
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-
-          <div className="flex flex-col gap-3 border-t border-[var(--prism-hairline)] pt-5 text-[12px] leading-relaxed text-[var(--prism-silver-dim)] md:flex-row md:items-start md:justify-between">
-            <p className="max-w-[70ch]">
-              隐私与使用说明：调查记录仅保存在你当前浏览器的本地存储中，不上传、不跨设备同步。搜索由服务端调用元宝搜索，密钥只存在于服务端环境变量。请勿上传包含个人隐私或未授权内容的图片。搜索结果属于外部内容，本系统只做整理，不为来源内容担保。
-            </p>
-            <p className="shrink-0">
-              搜索服务状态：
-              {searchReady === "checking" ? (
-                "检查中…"
+            <div
+              className="prism-pop-in mt-5 text-center text-[12px] text-[var(--prism-silver-dim)]"
+              style={{ animationDelay: "300ms" }}
+            >
+              {error ? (
+                <span className="text-[#ff6b6b]">{error}</span>
+              ) : searchReady === "checking" ? (
+                "正在检查搜索服务…"
               ) : searchReady === "ready" ? (
-                <span className="text-[var(--prism-accent)]">已配置</span>
+                <>
+                  <span className="text-[var(--prism-accent)]">元宝搜索已连接</span>
+                  <span className="mx-2 opacity-40">·</span>
+                  剩余 {remaining} 字
+                  <span className="mx-2 opacity-40">·</span>
+                  按住左键左右拖动可转动视角
+                </>
               ) : searchReady === "nokey" ? (
                 <span className="text-[#ff6b6b]">
                   未配置密钥（无法执行真实搜索）
@@ -263,10 +224,96 @@ export default function HomePage() {
                   </button>
                 </>
               )}
-            </p>
+            </div>
           </div>
-        </section>
-      </div>
+        </div>
+
+        {/* 下滑提示 */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-center">
+          <span className="prism-scroll-hint label-en">向下滑动</span>
+        </div>
+      </section>
+
+      {/* ---------- 第二屏：最近调查 + 深色方框 ---------- */}
+      <section className="relative z-10 mx-auto w-full max-w-[1180px] px-6 pb-20 pt-10 md:px-10">
+        {recent.length > 0 ? (
+          <div className="mb-8">
+            <div className="label-en mb-3">最近的调查 / Recent</div>
+            <ul className="grid gap-2 sm:grid-cols-2">
+              {recent.slice(0, 4).map((r) => (
+                <li key={r.id}>
+                  <Link
+                    href={`/report/${r.id}`}
+                    className="prism-row"
+                  >
+                    <span className="truncate text-[13.5px]">{r.claim}</span>
+                    <span className="label-en shrink-0">
+                      {r.resultStatus
+                        ? (RESULT_STATUS_LABEL[r.resultStatus as ResultStatus]?.zh ??
+                          r.status)
+                        : r.status}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+
+        {/* 深色方框：隐私 / 入口 / 支持 / 声明 */}
+        <div className="prism-footerbox">
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <div>
+              <h2 className="label-en">隐私说明</h2>
+              <p className="mt-3 text-[13px] leading-[1.85] text-[var(--prism-silver)]">
+                调查记录只保存在你当前浏览器的本地存储里，不上传、不跨设备同步，清除浏览器数据即不可恢复。上传的截图在浏览器本地完成文字识别，图片本身不会发送到服务端。请勿上传含个人隐私或未授权内容的图片。
+              </p>
+            </div>
+
+            <div>
+              <h2 className="label-en">核验入口</h2>
+              <ul className="mt-3 grid gap-2 text-[13px]">
+                <li>
+                  <Link href="/upload" className="prism-inline-link">
+                    截图查证 / OCR
+                  </Link>
+                  <span className="ml-2 text-[var(--prism-silver-dim)]">
+                    上传一张图，先认字再核查
+                  </span>
+                </li>
+                <li>
+                  <Link href="/monitor" className="prism-inline-link">
+                    持续盯梢
+                  </Link>
+                  <span className="ml-2 text-[var(--prism-silver-dim)]">
+                    定期复查，找新出现的来源
+                  </span>
+                </li>
+              </ul>
+
+              <h2 className="label-en mt-6">检索入口</h2>
+              <p className="mt-3 text-[13px] leading-[1.85] text-[var(--prism-silver)]">
+                所有检索都经服务端调用元宝搜索，密钥只存在于服务端环境变量，浏览器拿不到。返回的全部来源均为真实检索结果，模型不生成任何来源。
+              </p>
+            </div>
+
+            <div>
+              <h2 className="label-en">技术支持</h2>
+              <ul className="mt-3 grid gap-1.5 text-[13px] text-[var(--prism-silver)]">
+                <li>检索：元宝搜索 SearchPro</li>
+                <li>推理与报告：WorkBuddy 云服务大模型</li>
+                <li>文字识别：Tesseract.js（浏览器本地）</li>
+                <li>应用框架：Next.js · 三维场景：three.js</li>
+              </ul>
+
+              <h2 className="label-en mt-6">声明</h2>
+              <p className="mt-3 text-[13px] leading-[1.85] text-[var(--prism-silver)]">
+                PRISM 不宣称能判断一切真假。证据不足时它会明确写出证据不足，冲突就标注冲突，不抹平。搜索结果属于外部内容，本系统只做整理与溯源，不为来源内容的准确性担保。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

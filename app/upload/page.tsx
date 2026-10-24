@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { createWorker } from "tesseract.js";
 import Link from "next/link";
 import PageNav from "@/components/nav/PageNav";
+import AmbientBackdrop from "@/components/scene/AmbientBackdrop";
 
 const ACCEPTED = ["image/png", "image/jpeg", "image/webp"];
 const ACCEPTED_EXT = [".png", ".jpg", ".jpeg", ".webp"];
@@ -113,7 +114,8 @@ export default function UploadPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-[1000px] px-6 py-8 md:px-8">
+    <main className="relative mx-auto w-full max-w-[1000px] px-6 py-8 md:px-8">
+      <AmbientBackdrop />
       <header className="mb-8 flex flex-wrap items-center gap-x-6 gap-y-3">
         <PageNav />
         <Link href="/" className="flex items-baseline gap-3">

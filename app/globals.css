@@ -225,6 +225,364 @@ body {
   animation: prism-nudge-y 620ms var(--ease-prism);
 }
 
+/* ---------- 首页搜索条 ---------- */
+
+.prism-searchbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.7rem 0.65rem 1.1rem;
+  background: linear-gradient(
+    180deg,
+    rgba(14, 18, 26, 0.86) 0%,
+    rgba(7, 9, 13, 0.86) 100%
+  );
+  border: 1px solid var(--prism-hairline);
+  border-radius: var(--radius-prism);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+  transition:
+    border-color 260ms var(--ease-prism),
+    box-shadow 320ms var(--ease-prism),
+    transform 420ms var(--ease-prism);
+}
+
+.prism-searchbar:focus-within {
+  border-color: var(--prism-accent);
+  box-shadow:
+    0 0 0 1px rgba(216, 255, 117, 0.28),
+    0 18px 60px rgba(216, 255, 117, 0.12);
+  transform: translateY(-2px);
+}
+
+/* 提交瞬间的转场：先收再散，配合路由跳转 */
+.prism-searchbar.is-submitting {
+  transform: scale(0.97);
+  border-color: var(--prism-accent);
+  box-shadow:
+    0 0 0 6px rgba(216, 255, 117, 0.1),
+    0 0 60px rgba(216, 255, 117, 0.25);
+}
+
+.prism-searchbar-glyph {
+  color: var(--prism-accent);
+  font-size: 0.95rem;
+  transition: transform 320ms var(--ease-prism);
+}
+
+.prism-searchbar:focus-within .prism-searchbar-glyph {
+  transform: translateY(-2px) rotate(180deg);
+}
+
+.prism-searchbar-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--prism-ink);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  padding: 0.35rem 0;
+}
+
+.prism-searchbar-input::placeholder {
+  color: var(--prism-silver-dim);
+}
+
+.prism-searchbar-btn {
+  flex-shrink: 0;
+  padding: 0.7rem 1.35rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--prism-void);
+  background: var(--prism-accent);
+  border: 1px solid var(--prism-accent);
+  border-radius: var(--radius-prism);
+  cursor: pointer;
+  transition:
+    transform 280ms var(--ease-prism),
+    opacity 200ms var(--ease-prism),
+    box-shadow 260ms var(--ease-prism);
+}
+
+.prism-searchbar-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(216, 255, 117, 0.22);
+}
+
+.prism-searchbar-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.97);
+}
+
+.prism-searchbar-btn:disabled {
+  background: transparent;
+  color: var(--prism-silver-dim);
+  border-color: var(--prism-hairline);
+  cursor: not-allowed;
+}
+
+/* ---------- 轻量标签 / 行 / 链接 ---------- */
+
+.prism-chip {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--prism-silver);
+  background: rgba(18, 22, 31, 0.6);
+  border: 1px solid var(--prism-hairline);
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    transform 260ms var(--ease-prism),
+    color 200ms var(--ease-prism),
+    border-color 200ms var(--ease-prism);
+}
+
+.prism-chip:hover {
+  color: var(--prism-accent);
+  border-color: var(--prism-accent);
+  transform: translateY(-2px);
+}
+
+.prism-chip:active {
+  transform: translateY(1px) scale(0.97);
+}
+
+.prism-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(
+    180deg,
+    rgba(18, 22, 31, 0.72) 0%,
+    rgba(9, 11, 16, 0.72) 100%
+  );
+  border: 1px solid var(--prism-hairline);
+  border-radius: var(--radius-prism);
+  transition:
+    transform 260ms var(--ease-prism),
+    border-color 220ms var(--ease-prism);
+}
+
+.prism-row:hover {
+  transform: translateY(-2px);
+  border-color: var(--prism-accent);
+}
+
+.prism-inline-link {
+  color: var(--prism-ink);
+  border-bottom: 1px solid var(--prism-accent);
+  padding-bottom: 1px;
+  transition:
+    color 200ms var(--ease-prism),
+    opacity 200ms var(--ease-prism);
+}
+
+.prism-inline-link:hover {
+  color: var(--prism-accent);
+  opacity: 0.85;
+}
+
+/* ---------- 底部深色方框 ---------- */
+
+.prism-footerbox {
+  padding: 2rem 1.75rem;
+  /* 比页面更深一档，形成「被框出来」的层次 */
+  background: linear-gradient(
+    180deg,
+    rgba(6, 8, 12, 0.92) 0%,
+    rgba(4, 5, 8, 0.96) 100%
+  );
+  border: 1px solid var(--prism-hairline);
+  border-radius: var(--radius-prism);
+  box-shadow: inset 0 1px 0 rgba(244, 240, 232, 0.04);
+}
+
+/* ---------- 下滑提示 ---------- */
+
+@keyframes prism-hint-float {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateY(5px);
+    opacity: 1;
+  }
+}
+
+.prism-scroll-hint {
+  animation: prism-hint-float 2400ms var(--ease-prism) infinite;
+}
+
+/* ---------- 证据悬浮卡片 ---------- */
+
+.prism-ecard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.05rem 1.15rem 0.95rem;
+  color: inherit;
+  text-decoration: none;
+  background:
+    linear-gradient(
+      155deg,
+      rgba(22, 28, 38, 0.85) 0%,
+      rgba(9, 11, 16, 0.88) 58%
+    );
+  border: 1px solid var(--prism-hairline);
+  border-radius: var(--radius-prism);
+  backdrop-filter: blur(14px);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(244, 240, 232, 0.05);
+  /* 错落：位置与倾角由内联变量注入，避免整齐刻板的网格感 */
+  transform: translateY(var(--prism-dy, 0px)) rotate(var(--prism-rot, 0deg));
+  transition:
+    transform 340ms var(--ease-prism),
+    border-color 240ms var(--ease-prism),
+    box-shadow 340ms var(--ease-prism);
+  will-change: transform;
+}
+
+/* 错落编排：瀑布流分栏，卡片不跨栏 */
+.prism-evidence-flow {
+  column-gap: 0.9rem;
+}
+
+.prism-evidence-flow > * {
+  break-inside: avoid;
+  margin-bottom: 0.9rem;
+  display: inline-block;
+  width: 100%;
+}
+
+/* 取景框角标：默认收拢，悬停时向外展开，产生「锁定目标」的科技感 */
+.prism-ecard-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  opacity: 0.35;
+  transition:
+    transform 340ms var(--ease-prism),
+    opacity 240ms var(--ease-prism);
+}
+
+.prism-ecard-corner.tl {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid var(--prism-accent);
+  border-left: 1px solid var(--prism-accent);
+}
+
+.prism-ecard-corner.br {
+  right: -1px;
+  bottom: -1px;
+  border-right: 1px solid var(--prism-accent);
+  border-bottom: 1px solid var(--prism-accent);
+}
+
+.prism-ecard:hover,
+.prism-ecard:focus-visible {
+  transform: translateY(calc(-5px + var(--prism-dy, 0px)))
+    rotate(var(--prism-rot, 0deg)) scale(1.012);
+  border-color: var(--prism-hairline-strong);
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.55),
+    0 0 24px rgba(216, 255, 117, 0.1),
+    inset 0 1px 0 rgba(244, 240, 232, 0.06);
+}
+
+.prism-ecard:hover .prism-ecard-corner,
+.prism-ecard:focus-visible .prism-ecard-corner {
+  opacity: 1;
+}
+
+.prism-ecard:hover .prism-ecard-corner.tl {
+  transform: translate(-3px, -3px);
+}
+
+.prism-ecard:hover .prism-ecard-corner.br {
+  transform: translate(3px, 3px);
+}
+
+.prism-ecard-openable:hover .prism-ecard-title {
+  color: var(--prism-accent);
+}
+
+.prism-ecard-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.28rem 0.6rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  border: 1px solid;
+  border-radius: 999px;
+}
+
+.prism-ecard-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.prism-ecard-title {
+  font-size: 0.98rem;
+  font-weight: 550;
+  line-height: 1.5;
+  transition: color 220ms var(--ease-prism);
+}
+
+.prism-ecard-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ---------- 全站环境背景层（子页面） ---------- */
+
+@keyframes prism-mist-drift {
+  0%,
+  100% {
+    transform: translate3d(-4%, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(5%, 3%, 0) scale(1.12);
+  }
+}
+
+.prism-ambient-mist {
+  animation: prism-mist-drift 26s var(--ease-prism) infinite;
+  will-change: transform;
+}
+
+/* ---------- 页面转场 ---------- */
+
+@keyframes prism-page-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.995);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.prism-page-enter {
+  animation: prism-page-in 460ms var(--ease-prism) both;
+}
+
 /* ---------- 减少动态效果（§16.2） ---------- */
 
 @media (prefers-reduced-motion: reduce) {
