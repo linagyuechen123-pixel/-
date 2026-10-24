@@ -35,19 +35,33 @@ PRISM 是面向 WaytoAGI 1024 超能 Coding 周末「侦探赛道」的作品，
 
 | 路径 | 职责 |
 |---|---|
-| `app/page.tsx` | 首页黑镜入口 |
+| `app/page.tsx` | 首页：3D 通天藤蔓背景 + 搜索框 + 底部深色方框 |
+| `app/template.tsx` | 全站页面转场动画（App Router template，每次导航重新挂载） |
 | `app/investigate/[id]/` | 调查工作台：命题解剖 → 证据调查 → 报告 + 拖拽分类 |
-| `app/report/[id]/` | 报告页（从 localStorage 还原） |
+| `app/report/[id]/` | 报告页（从 localStorage 还原）+ 3D 证据关系网络 |
 | `app/upload/` | 截图查证 + OCR |
-| `app/monitor/` | 监控中心（未启用状态说明） |
+| `app/monitor/` | 监控中心（持续盯梢） |
 | `app/api/search/` | 单次真实搜索 |
 | `app/api/health/` | 搜索配置体检 |
+| `components/scene/VineScene.tsx` | 首页 3D 通天藤蔓（three.js 程序化生成，可拖动视角） |
+| `components/scene/EvidenceNetwork.tsx` | 报告页 3D 证据关系网络（按簇聚合） |
+| `components/scene/AmbientBackdrop.tsx` | 子页面统一深色环境层（CSS，不占 WebGL） |
+| `components/evidence/SourceCard.tsx` | 证据悬浮卡片（整卡即链接） |
 | `lib/search/wsa.ts` | 元宝搜索接入、结果规范化、去重、错误映射 |
 | `lib/investigation/runner.ts` | 调查引擎编排：计划 → 多轮 → 反证 → 证据 → 报告 |
 | `lib/investigation/rules.ts` | 规则化降级模式（§7.6） |
+| `lib/investigation/watch.ts` | 持续盯梢：复查 + 快照 diff |
 | `lib/llm/browser.ts` | 免密钥大模型封装（流式收集 + JSON 校验） |
 | `lib/storage/local.ts` | 本地持久化 + 服务端短时缓存 |
 | `types/prism.ts` | 全项目共享数据模型 |
+
+### 视觉与交互体系（2026-10-24 重构）
+
+- **3D 场景**：全部程序化生成，无外部模型或贴图。首页藤蔓「巨物通天」，报告页证据网络按（子命题 × 关系）聚簇——一次调查上百条来源逐条渲染会糊成噪点。
+- **视角交互**：鼠标左键按住左右拖动改变视角，松手惯性衰减；`prefers-reduced-motion` 下静止但仍可拖动；WebGL 不可用时不渲染 3D，交回 CSS 兜底。
+- **动效统一**：`.prism-pop-in` 弹入、`.prism-nav-btn` 悬停上浮 + 按下回弹、`prism-page-enter` 页面转场，全部走 `cubic-bezier(0.22,1,0.36,1)`；减少动态效果由 `globals.css` 统一关闭。
+- **证据卡片**：整张卡片即来源链接（`<a>` 包裹），带交互控件时改为整卡点击 + 控件拦截，避免嵌套 `<a>`；网址无效时禁用并写明原因。
+- **错落编排**：`.prism-evidence-flow` 瀑布流分栏 + 每张卡片注入确定性倾角/位移（`--prism-rot` / `--prism-dy`），取消整齐网格。
 
 ## 3. 核心数据模型
 
@@ -183,6 +197,8 @@ PRISM 是面向 WaytoAGI 1024 超能 Coding 周末「侦探赛道」的作品，
 7. **沙箱开发环境构建目录** —— 本地沙箱对 `.next` 目录有权限守卫，本地构建用 `PRISM_DIST_DIR` 切换到隔离目录；部署平台侧使用标准 `.next`，构建正常。
 8. **搜索摘要乱码片段** —— 个别上游来源的 passage 摘要中夹有少量非中文字符（上游数据问题），不影响结论判断，原始网页为准。
 9. **首页「最近调查」入口** 使用 `<a>` 跳转 `/report/[id]`（会整页刷新），行为正常但与站内其他 Link 不一致，属可选优化项。
+10. **3D 场景的设备差异** —— 无 WebGL 的设备不渲染 3D，退回 CSS 背景（功能不受影响，只是没有藤蔓）。移动端 3D 叶片数与像素比已降级，实测无横向溢出（scrollWidth = 390）。
+11. **证据关系网络按簇聚合** —— 3D 网络里一枚叶片代表「同一子命题下同一关系的一组证据」，不是一条来源；逐条渲染上百个节点会糊成噪点。每簇的真实条数保留在文字说明里，卡片列表仍是逐条完整呈现。
 
 ## 9. 下一步任务
 
